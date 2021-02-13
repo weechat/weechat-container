@@ -100,6 +100,8 @@ def main():
             subprocess.run(command, check=False)
         except KeyboardInterrupt:
             pass
+        except Exception as exc:  # pylint: disable=broad-except
+            print(exc)
 
 
 if __name__ == '__main__':
