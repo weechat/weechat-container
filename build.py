@@ -16,10 +16,11 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+"""Build WeeChat container image."""
+
 import argparse
 import urllib.request
 import subprocess
-import sys
 
 BUILDERS = ('docker', 'podman')
 DISTROS = ('debian', 'alpine')
@@ -80,8 +81,8 @@ def get_tags_args(version, distro, slim):
     return tags_args
 
 
-if __name__ == '__main__':
-    # main(sys.argv)
+def main():
+    """Main function."""
     args = get_parser().parse_args()
     slim = ['--build-arg', 'SLIM=1'] if args.slim else []
     tags = get_tags_args(args.version, args.distro, args.slim)
@@ -97,6 +98,10 @@ if __name__ == '__main__':
     print(f'Running: {" ".join(command)}')
     if not args.dry_run:
         try:
-            subprocess.run(command)
+            subprocess.run(command, check=False)
         except KeyboardInterrupt:
             pass
+
+
+if __name__ == '__main__':
+    main()
