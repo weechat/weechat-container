@@ -29,21 +29,23 @@ The slim version includes all plugins except these ones:
 - scripting languages: perl, python, ruby, lua, tcl, guile, php
 - spell
 
-Example:
+A Makefile is provided and supports these variables:
+
+- `BUILDER`: the tool to build the image: `docker`, `podman` or any equivalent tool (default is `docker`)
+- `VERSION`: the WeeChat version to build (default is `latest` which is the latest stable version, use `devel` for development version, which is built every day).
+
+## Examples
+
+Build a Debian-based container with latest stable version of WeeChat:
 
 ```
 $ make debian
 ```
 
-Supported make variables:
-
-- `BUILDER`: the tool to build the image: `docker`, `podman` or any equivalent tool (default is `docker`)
-- `VERSION`: the WeeChat version to build (default is `latest` which is the latest stable version, use `devel` for development version, which is built every day).
-
-For example, to build the slim container running Alpine and WeeChat 2.9, with Podman:
+Build an Alpine-based container with Podman, slim version, WeeChat 3.0.1:
 
 ```
-$ make BUILDER=podman VERSION=2.9 alpine-slim
+$ make BUILDER=podman VERSION=3.0.1 alpine-slim
 ```
 
 ## Copyright

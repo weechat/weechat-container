@@ -22,7 +22,6 @@ import argparse
 import urllib.request
 import subprocess
 
-BUILDERS = ('docker', 'podman')
 DISTROS = ('debian', 'alpine')
 
 
@@ -30,9 +29,9 @@ def get_parser():
     """Return the command line parser."""
     parser = argparse.ArgumentParser(description='Build of WeeChat container')
     parser.add_argument('-b', '--builder',
-                        choices=BUILDERS,
-                        default=BUILDERS[0],
-                        help='program used to build the container image')
+                        default='docker',
+                        help=('program used to build the container image, '
+                              'like "docker" (default) or "podman"'))
     parser.add_argument('-d', '--distro',
                         choices=DISTROS,
                         default=DISTROS[0],
