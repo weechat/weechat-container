@@ -20,7 +20,7 @@ VERSION ?= "latest"
 
 .PHONY: all debian debian-slim alpine alpine-slim
 
-all: debian debian-slim alpine alpine-slim
+all: debian
 
 debian:
 	./build.py -b "$(BUILDER)" -d "debian" "$(VERSION)"
