@@ -1,5 +1,7 @@
 # Containerized WeeChat
 
+[![Build Status](https://github.com/weechat/weechat-container/workflows/CI/badge.svg)](https://github.com/weechat/weechat-container/actions?query=workflow%3A%22CI%22)
+
 Build of WeeChat in container, using [Docker](https://www.docker.com/) (default) or [Podman](https://podman.io/).
 
 ## Requirements
