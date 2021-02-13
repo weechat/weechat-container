@@ -33,3 +33,12 @@ alpine:
 
 alpine-slim:
 	./build.py -b "$(BUILDER)" -d "alpine" --slim "$(VERSION)"
+
+lint: flake8 pylint
+
+flake8:
+	flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+	flake8 . --count --exit-zero --max-complexity=10 --statistics
+
+pylint:
+	pylint build.py
