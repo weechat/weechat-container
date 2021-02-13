@@ -70,9 +70,11 @@ def get_tags_args(version, distro, slim):
             url = 'https://weechat.org/dev/info/stable/'
             with urllib.request.urlopen(url) as response:
                 version = response.read().decode('utf-8').strip()
-        numbers = version.split('.')
-        for i in range(len(numbers)):
-            tags.append('.'.join(numbers[:i + 1]))
+            numbers = version.split('.')
+            for i in range(len(numbers)):
+                tags.append('.'.join(numbers[:i + 1]))
+        else:
+            tags.append(version)
     tags_args = []
     for tag in reversed(tags):
         tags_args.append('-t')
