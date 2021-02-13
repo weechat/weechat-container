@@ -1,0 +1,23 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+
+  build:
+
+    strategy:
+      matrix:
+        os: [ubuntu-20.04]
+        builder: [docker, podman]
+        image: [debian, debian-slim, alpine, alpine-slim]
+
+    name: ${{ matrix.builder }} build ${{ matrix.image }}
+    runs-on: ${{ matrix.os }}
+
+    steps:
+
+      - uses: actions/checkout@v2
+
+      - name: ${{ matrix.builder }} build ${{ matrix.image }}
+        run: make BUILDER=${{ matrix.builder }} ${{ matrix.image }}

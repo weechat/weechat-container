@@ -1,0 +1,145 @@
+# WeeChat container based on Alpine
+#
+# Supported arguments:
+#    VERSION  WeeChat version (default: "latest" which is latest stable)
+#    SLIM     1 for a slim version (without plugins: script, scripts and spell)
+
+# ==== base for all stages ====
+
+FROM alpine:3.13 as base
+LABEL stage=base
+
+MAINTAINER Sébastien Helleu <flashcode@flashtux.org>
+
+# WeeChat version
+ARG VERSION="latest"
+ENV VERSION="${VERSION}"
+
+ARG SLIM=""
+ENV SLIM="${SLIM}"
+
+ARG HOME="/home/weechat"
+ENV HOME="${HOME}"
+
+ENV LANG="C.UTF-8"
+ENV TERM="xterm-256color"
+
+# create a "weechat" user
+RUN set -eux; \
+    adduser -u 1001 -D -h "$HOME" weechat; \
+    mkdir "$HOME/.weechat"; \
+    chown -R weechat:weechat "$HOME"
+
+# ==== build ====
+
+FROM base as build
+LABEL stage=build
+
+RUN set -eux; \
+    \
+    # install download/build dependencies
+    apk add --no-cache \
+        asciidoctor \
+        cmake \
+        curl \
+        curl-dev \
+        g++ \
+        gcc \
+        gettext-dev \
+        gnupg \
+        gnutls-dev \
+        libgcrypt-dev \
+        make \
+        ncurses-dev \
+        pkgconf \
+        xz \
+        zlib-dev \
+    ; \
+    if [ -z "$SLIM" ] ; then \
+        apk add --no-cache \
+            argon2-dev \
+            aspell-dev \
+            guile-dev \
+            libxml2-dev \
+            lua5.3-dev \
+            perl-dev \
+            php7-dev \
+            php7-embed \
+            python3-dev \
+            ruby-dev \
+            tcl-dev \
+        ; \
+    fi ; \
+    \
+    # download WeeChat
+    cd /tmp; \
+    curl -o weechat.tar.xz "https://weechat.org/files/src/weechat-${VERSION}.tar.xz"; \
+    curl -o weechat.tar.xz.asc "https://weechat.org/files/src/weechat-${VERSION}.tar.xz.asc"; \
+    export GNUPGHOME="$(mktemp -d)"; \
+    gpg --batch --keyserver hkps://keys.openpgp.org --recv-keys A9AB5AB778FA5C3522FD0378F82F4B16DEC408F8; \
+    gpg --batch --verify /tmp/weechat.tar.xz.asc /tmp/weechat.tar.xz; \
+    gpgconf --kill all; \
+    \
+    # build WeeChat
+    mkdir -p /tmp/weechat/build; \
+    tar -xf /tmp/weechat.tar.xz -C /tmp/weechat --strip-components 1; \
+    cd /tmp/weechat/build; \
+    if [ -z "$SLIM" ] ; then \
+        cmake \
+            .. \
+            -DCMAKE_INSTALL_PREFIX=/opt/weechat \
+            -DENABLE_MAN=ON \
+        ; \
+    else \
+        cmake \
+            .. \
+            -DCMAKE_INSTALL_PREFIX=/opt/weechat \
+            -DENABLE_MAN=ON \
+            -DENABLE_SCRIPT=OFF \
+            -DENABLE_SCRIPTS=OFF \
+            -DENABLE_SPELL=OFF \
+        ; \
+    fi ; \
+    make -j $(nproc); \
+    make install
+
+# ==== final image ====
+
+FROM base
+
+RUN set -eux; \
+    \
+    # install runtime dependencies
+    apk add --no-cache \
+        ca-certificates \
+        gettext \
+        gnutls \
+        libcurl \
+        libgcrypt \
+        ncurses-libs \
+        ncurses-terminfo \
+        zlib \
+    ; \
+    if [ -z "$SLIM" ] ; then \
+        apk add --no-cache \
+            aspell-libs \
+            guile \
+            guile-libs \
+            lua5.3-libs \
+            perl \
+            php7 \
+            php7-embed \
+            python3 \
+            ruby-libs \
+            tcl \
+        ; \
+    fi
+
+COPY --from=build /opt/weechat /opt/weechat
+
+WORKDIR $HOME
+
+USER weechat
+
+# weird, a refresh has to be forced to prevent a blank screen on startup
+CMD ["/opt/weechat/bin/weechat", "-r", "/window refresh"]

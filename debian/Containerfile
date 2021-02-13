@@ -1,0 +1,150 @@
+# WeeChat container based on Debian
+#
+# Supported arguments:
+#    VERSION  WeeChat version (default: "latest" which is latest stable)
+#    SLIM     1 for a slim version (without plugins: script, scripts and spell)
+
+# ==== base for all stages ====
+
+FROM debian:buster-slim as base
+LABEL stage=base
+
+MAINTAINER Sébastien Helleu <flashcode@flashtux.org>
+
+# WeeChat version
+ARG VERSION="latest"
+ENV VERSION="${VERSION}"
+
+ARG SLIM=""
+ENV SLIM="${SLIM}"
+
+ARG HOME="/home/weechat"
+ENV HOME="${HOME}"
+
+ENV LANG="C.UTF-8"
+ENV TERM="xterm-256color"
+
+# create a "weechat" user
+RUN set -eux; \
+    useradd --create-home --home-dir "$HOME" weechat; \
+    mkdir "$HOME/.weechat"; \
+    chown -R weechat:weechat "$HOME"
+
+# ==== build ====
+
+FROM base as build
+LABEL stage=build
+
+RUN set -eux; \
+    \
+    # install download/build dependencies
+    apt-get update; \
+    apt-get install -y --no-install-recommends \
+        asciidoctor \
+        ca-certificates \
+        cmake \
+        curl \
+        g++ \
+        gcc \
+        gettext \
+        gnupg \
+        libcurl3-gnutls-dev \
+        libgcrypt20-dev \
+        libgnutls28-dev \
+        libncursesw5-dev \
+        make \
+        pkg-config \
+        xz-utils \
+        zlib1g-dev \
+    ; \
+    if [ -z "$SLIM" ] ; then \
+        apt-get install -y --no-install-recommends \
+            guile-2.2-dev \
+            libargon2-dev \
+            libaspell-dev \
+        liblua5.3-dev \
+            libperl-dev \
+            libphp-embed \
+            libsodium-dev \
+            libxml2-dev \
+            php-dev \
+            python3-dev \
+            ruby2.5-dev \
+            tcl-dev \
+        ; \
+    fi ; \
+    \
+    # download WeeChat
+    cd /tmp; \
+    curl -o weechat.tar.xz "https://weechat.org/files/src/weechat-${VERSION}.tar.xz"; \
+    curl -o weechat.tar.xz.asc "https://weechat.org/files/src/weechat-${VERSION}.tar.xz.asc"; \
+    export GNUPGHOME="$(mktemp -d)"; \
+    gpg --batch --keyserver hkps://keys.openpgp.org --recv-keys A9AB5AB778FA5C3522FD0378F82F4B16DEC408F8; \
+    gpg --batch --verify /tmp/weechat.tar.xz.asc /tmp/weechat.tar.xz; \
+    gpgconf --kill all; \
+    \
+    # build WeeChat
+    mkdir -p /tmp/weechat/build; \
+    tar -xf /tmp/weechat.tar.xz -C /tmp/weechat --strip-components 1; \
+    cd /tmp/weechat/build; \
+    if [ -z "$SLIM" ] ; then \
+        cmake \
+            .. \
+            -DCMAKE_INSTALL_PREFIX=/opt/weechat \
+            -DENABLE_MAN=ON \
+        ; \
+    else \
+        cmake \
+            .. \
+            -DCMAKE_INSTALL_PREFIX=/opt/weechat \
+            -DENABLE_MAN=ON \
+            -DENABLE_SCRIPT=OFF \
+            -DENABLE_SCRIPTS=OFF \
+            -DENABLE_SPELL=OFF \
+        ; \
+    fi ; \
+    make -j $(nproc); \
+    make install
+
+# ==== final image ====
+
+FROM base
+
+RUN set -eux; \
+    \
+    # install runtime dependencies
+    apt-get update; \
+    apt-get install -y --no-install-recommends \
+        ca-certificates \
+        libcurl3-gnutls \
+        libgcrypt20 \
+        libgnutls30 \
+        libncursesw6 \
+        locales \
+        ncurses-term \
+        zlib1g \
+    ; \
+    if [ -z "$SLIM" ] ; then \
+        apt-get install -y --no-install-recommends \
+            guile-2.2-libs \
+            libaspell15 \
+            liblua5.3-0 \
+            libperl5.28 \
+            libphp-embed \
+            libpython3.7 \
+            libruby2.5 \
+            libtcl8.6 \
+        ; \
+    fi ; \
+    # cleaning
+    apt-get clean; \
+    rm -rf /var/lib/apt/lists/*
+
+COPY --from=build /opt/weechat /opt/weechat
+
+WORKDIR $HOME
+
+USER weechat
+
+# weird, a refresh has to be forced to prevent a blank screen on startup
+CMD ["/opt/weechat/bin/weechat", "-r", "/window refresh"]
