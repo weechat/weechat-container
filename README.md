@@ -50,6 +50,12 @@ Build an Alpine-based container with Podman, slim version, WeeChat 3.0.1:
 $ make BUILDER=podman VERSION=3.0.1 alpine-slim
 ```
 
+Build a Debian-based container with WeeChat 3.0.1, directly with docker:
+
+```
+$ docker build -f debian/Containerfile --build-arg VERSION=3.0.1 .
+```
+
 ## Copyright
 
 Copyright © 2021 [Sébastien Helleu](https://github.com/flashcode)
