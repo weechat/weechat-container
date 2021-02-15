@@ -35,7 +35,7 @@ def get_parser():
     parser.add_argument('-d', '--distro',
                         choices=DISTROS,
                         default=DISTROS[0],
-                        help='base distro for the container')
+                        help='base Linux distribution for the container')
     parser.add_argument('-n', '--dry-run', action='store_true',
                         help=('dry run: display command but do not run it'))
     parser.add_argument('-s', '--slim', action='store_true',
