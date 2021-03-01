@@ -14,7 +14,7 @@ Optional dependencies:
 
 - Python ≥ 3.6 if you use the provided Makefile or build.py script
 
-## Build
+## Container types
 
 Containers are based on Debian or Alpine (smaller size, with same features):
 
@@ -31,12 +31,12 @@ The slim version includes all plugins except these ones:
 - scripting languages: perl, python, ruby, lua, tcl, guile, php
 - spell
 
+## Build
+
 A Makefile is provided and supports these variables:
 
 - `BUILDER`: the tool to build the image: `docker`, `podman` or any equivalent tool (default is `docker`)
 - `VERSION`: the WeeChat version to build (default is `latest` which is the latest stable version, use `devel` for development version, which is built every day).
-
-## Examples
 
 Build a Debian-based container with latest stable version of WeeChat:
 
@@ -54,6 +54,14 @@ Build a Debian-based container with WeeChat 3.0.1, directly with docker:
 
 ```
 $ docker build -f debian/Containerfile --build-arg VERSION=3.0.1 .
+```
+
+## Run
+
+Run latest WeeChat version in Debian container:
+
+```
+docker run -it weechat
 ```
 
 ## Copyright
