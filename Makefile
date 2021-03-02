@@ -15,8 +15,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-BUILDER ?= "docker"
-VERSION ?= "latest"
+BUILDER ?= docker
+VERSION ?= latest
 
 .PHONY: all debian debian-slim alpine alpine-slim
 
