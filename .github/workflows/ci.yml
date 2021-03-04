@@ -52,4 +52,4 @@ jobs:
       - name: ${{ matrix.builder }} build ${{ matrix.image }}
         run: |
           make BUILDER=${{ matrix.builder }} ${{ matrix.image }}
-          make BUILDER=${{ matrix.builder }} test-container
+          make BUILDER=${{ matrix.builder }} IMAGE=weechat:latest-${{ matrix.image }} test-container

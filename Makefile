@@ -17,6 +17,7 @@
 
 BUILDER ?= docker
 VERSION ?= latest
+IMAGE ?= weechat
 
 .PHONY: all debian debian-slim alpine alpine-slim
 
@@ -35,7 +36,7 @@ alpine-slim:
 	./build.py -b "$(BUILDER)" -d "alpine" --slim "$(VERSION)"
 
 test-container:
-	"$(BUILDER)" run weechat /opt/weechat/bin/weechat --version
+	"$(BUILDER)" run "$(IMAGE)" /opt/weechat/bin/weechat --version
 
 lint: flake8 pylint
 
