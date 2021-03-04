@@ -34,6 +34,9 @@ alpine:
 alpine-slim:
 	./build.py -b "$(BUILDER)" -d "alpine" --slim "$(VERSION)"
 
+test-container:
+	"$(BUILDER)" run -it weechat /opt/weechat/bin/weechat -v
+
 lint: flake8 pylint
 
 flake8:

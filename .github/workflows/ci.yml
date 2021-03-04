@@ -50,4 +50,6 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: ${{ matrix.builder }} build ${{ matrix.image }}
-        run: make BUILDER=${{ matrix.builder }} ${{ matrix.image }}
+        run: |
+          make BUILDER=${{ matrix.builder }} ${{ matrix.image }}
+          make BUILDER=${{ matrix.builder }} test-container
