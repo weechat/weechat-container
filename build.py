@@ -58,9 +58,11 @@ def get_tags_args(version, distro, slim):
     :return: list of tag arguments for command line, for example:
        ['-t', 'weechat:3.0-alpine', '-t', 'weechat:3-alpine']
     """
-    suffix = f'-{distro}' if distro != 'debian' else ''
-    if slim:
-        suffix += '-slim'
+    str_slim = '-slim' if slim else ''
+    if distro == 'debian':
+        suffixes = [str_slim, f'-{distro}{str_slim}']
+    else:
+        suffixes = [f'-{distro}{str_slim}']
     tags = []
     if version == 'devel':
         tags.append(version)
@@ -77,8 +79,9 @@ def get_tags_args(version, distro, slim):
             tags.append(version)
     tags_args = []
     for tag in reversed(tags):
-        tags_args.append('-t')
-        tags_args.append(f'weechat:{tag}{suffix}')
+        for suffix in suffixes:
+            tags_args.append('-t')
+            tags_args.append(f'weechat:{tag}{suffix}')
     return tags_args
 
 
