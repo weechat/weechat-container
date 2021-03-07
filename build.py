@@ -47,16 +47,17 @@ def get_parser():
     return parser
 
 
-def get_tags_args(version, distro, slim):
+def get_version_tags(version, distro, slim):
     """
-    Get tags to apply on the container image.
+    Get WeeChat version and tags to apply on the container image.
 
     :param str version: x.y, x.y.z, "latest", "stable", "devel"
     :param str distro: "debian" or "alpine"
     :paral bool slim: slim version
     :rtype: list
-    :return: list of tag arguments for command line, for example:
-       ['-t', 'weechat:3.0-alpine', '-t', 'weechat:3-alpine']
+    :return: tuple (version, tags) where version if the version of WeeChat
+        to build and tags is a list of tag arguments for command line,
+        for example: ['-t', 'weechat:3.0-alpine', '-t', 'weechat:3-alpine']
     """
     str_slim = '-slim' if slim else ''
     if distro == 'debian':
@@ -82,19 +83,19 @@ def get_tags_args(version, distro, slim):
         for suffix in suffixes:
             tags_args.append('-t')
             tags_args.append(f'weechat:{tag}{suffix}')
-    return tags_args
+    return (version, tags_args)
 
 
 def main():
     """Main function."""
     args = get_parser().parse_args()
     slim = ['--build-arg', 'SLIM=1'] if args.slim else []
-    tags = get_tags_args(args.version, args.distro, args.slim)
+    version, tags = get_version_tags(args.version, args.distro, args.slim)
     command = [
         f'{args.builder}',
         'build',
         '-f', f'{args.distro}/Containerfile',
-        '--build-arg', f'VERSION={args.version}',
+        '--build-arg', f'VERSION={version}',
         *slim,
         *tags,
         '.',
