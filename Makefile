@@ -23,6 +23,8 @@ IMAGE ?= weechat
 
 all: debian
 
+all-images: debian debian-slim alpine alpine-slim
+
 debian:
 	./build.py -b "$(BUILDER)" -d "debian" "$(VERSION)"
 

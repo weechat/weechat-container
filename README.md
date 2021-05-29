@@ -2,11 +2,11 @@
 
 [![Build Status](https://github.com/weechat/weechat-container/workflows/CI/badge.svg)](https://github.com/weechat/weechat-container/actions?query=workflow%3A%22CI%22)
 
-Build of WeeChat in container, using [Docker](https://www.docker.com/) (default) or [Podman](https://podman.io/).
+Build of WeeChat images using [Docker](https://www.docker.com/) (default) or [Podman](https://podman.io/).
 
 ## Requirements
 
-The following packages are required to build containers:
+The following packages are required to build images:
 
 - Docker or Podman
 
@@ -14,9 +14,9 @@ Optional dependencies:
 
 - Python ≥ 3.6 if you use the provided Makefile or build.py script
 
-## Container types
+## Image types
 
-Containers are based on Debian or Alpine (smaller size, with same features):
+Images are based on Debian or Alpine (smaller size, with same features):
 
 - Debian Buster:
   - `debian` (~ 300 MB)
@@ -38,19 +38,25 @@ A Makefile is provided and supports these variables:
 - `BUILDER`: the tool to build the image: `docker`, `podman` or any equivalent tool (default is `docker`)
 - `VERSION`: the WeeChat version to build (default is `latest` which is the latest stable version, use `devel` for development version, which is built every day).
 
-Build a Debian-based container with latest stable version of WeeChat:
+Build a Debian-based image with latest stable version of WeeChat:
 
 ```
 $ make debian
 ```
 
-Build an Alpine-based container with Podman, slim version, WeeChat 3.0.1:
+Build all images with latest stable version of WeeChat:
+
+```
+$ make all-images
+```
+
+Build an Alpine-based image with Podman, slim version, WeeChat 3.0.1:
 
 ```
 $ make BUILDER=podman VERSION=3.0.1 alpine-slim
 ```
 
-Build a Debian-based container with WeeChat 3.0.1, directly with docker:
+Build a Debian-based image with WeeChat 3.0.1, directly with docker:
 
 ```
 $ docker build -f debian/Containerfile --build-arg VERSION=3.0.1 .
