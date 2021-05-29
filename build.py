@@ -81,8 +81,14 @@ def get_version_tags(version, distro, slim):
     tags_args = []
     for tag in reversed(tags):
         for suffix in suffixes:
-            tags_args.append('-t')
-            tags_args.append(f'weechat:{tag}{suffix}')
+            tags_args.extend(
+                [
+                    '-t',
+                    f'weechat:{tag}{suffix}',
+                    '-t',
+                    f'weechat/weechat:{tag}{suffix}',
+                ]
+            )
     return (version, tags_args)
 
 
