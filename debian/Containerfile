@@ -18,17 +18,17 @@ ENV VERSION="${VERSION}"
 ARG SLIM=""
 ENV SLIM="${SLIM}"
 
-ARG HOME="/home/weechat"
+ARG HOME="/home/user"
 ENV HOME="${HOME}"
 
 ENV LANG="C.UTF-8"
 ENV TERM="xterm-256color"
 
-# create a "weechat" user
+# create a user
 RUN set -eux; \
-    useradd --create-home --home-dir "$HOME" weechat; \
+    useradd --create-home --home-dir "$HOME" user; \
     mkdir "$HOME/.weechat"; \
-    chown -R weechat:weechat "$HOME"
+    chown -R user:user "$HOME"
 
 # ==== build ====
 
@@ -146,7 +146,7 @@ RUN ln -sf /opt/weechat/bin/weechat /usr/bin/weechat
 
 WORKDIR $HOME
 
-USER weechat
+USER user
 
 # weird, a refresh has to be forced to prevent a blank screen on startup
 CMD ["weechat", "-r", "/window refresh"]

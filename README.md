@@ -74,7 +74,7 @@ Run with a custom home directory on host to persist data:
 
 ```
 mkdir ~/.weechat-container
-docker run -ti -v $HOME/.weechat-container:/home/weechat/.weechat weechat
+docker run -ti -v $HOME/.weechat-container:/home/user/.weechat weechat
 ```
 
 ## Copyright
