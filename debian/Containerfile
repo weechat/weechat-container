@@ -142,9 +142,11 @@ RUN set -eux; \
 
 COPY --from=build /opt/weechat /opt/weechat
 
+RUN ln -sf /opt/weechat/bin/weechat /usr/bin/weechat
+
 WORKDIR $HOME
 
 USER weechat
 
 # weird, a refresh has to be forced to prevent a blank screen on startup
-CMD ["/opt/weechat/bin/weechat", "-r", "/window refresh"]
+CMD ["weechat", "-r", "/window refresh"]
