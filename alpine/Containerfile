@@ -27,7 +27,10 @@ ENV TERM="xterm-256color"
 # create a user
 RUN set -eux; \
     adduser -u 1001 -D -h "$HOME" user; \
-    mkdir "$HOME/.weechat"; \
+    mkdir -p "$HOME/.weechat"; \
+    mkdir -p "$HOME/.config/weechat"; \
+    mkdir -p "$HOME/.local/share/weechat"; \
+    mkdir -p "$HOME/.cache/weechat"; \
     chown -R user:user "$HOME"
 
 # ==== build ====

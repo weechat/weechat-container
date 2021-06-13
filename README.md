@@ -70,11 +70,18 @@ Run latest WeeChat version in Debian container:
 docker run -it weechat
 ```
 
-Run with a custom home directory on host to persist data:
+Run with custom home directories on host to persist data (WeeChat ≥ 3.2, using XDG directories):
 
 ```
-mkdir ~/.weechat-container
-docker run -ti -v $HOME/.weechat-container:/home/user/.weechat weechat
+mkdir -p ~/.weechat-container/config ~/.weechat-container/data ~/.weechat-container/cache
+docker run -ti -v $HOME/.weechat-container/config:/home/user/.config/weechat -v $HOME/.weechat-container/data:/home/user/.local/share/weechat -v $HOME/.weechat-container/cache:/home/user/.cache/weechat weechat
+```
+
+Run with a custom single home directory on host to persist data (any WeeChat version):
+
+```
+mkdir -p ~/.weechat-container
+docker run -ti -v $HOME/.weechat-container:/home/user/.weechat weechat -d /home/user/.weechat
 ```
 
 ## Copyright
