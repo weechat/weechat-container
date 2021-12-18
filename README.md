@@ -21,7 +21,7 @@ Images are based on Debian or Alpine (smaller size, with same features):
 - Debian Buster:
   - `debian` (~ 300 MB)
   - `debian-slim`: slim version (~ 110 MB)
-- Alpine 3.13:
+- Alpine 3.15:
   - `alpine` (~ 150 MB)
   - `alpine-slim`: slim version (~ 30 MB)
 
