@@ -18,7 +18,7 @@ Optional dependencies:
 
 Images are based on Debian or Alpine (smaller size, with same features):
 
-- Debian Buster:
+- Debian Bullseye:
   - `debian` (~ 300 MB)
   - `debian-slim`: slim version (~ 110 MB)
 - Alpine 3.15:
