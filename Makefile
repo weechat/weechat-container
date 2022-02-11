@@ -40,7 +40,7 @@ alpine-slim:
 test-container:
 	"$(BUILDER)" run "$(IMAGE)" weechat --version
 
-lint: flake8 pylint
+lint: flake8 pylint bandit
 
 flake8:
 	flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
@@ -48,3 +48,6 @@ flake8:
 
 pylint:
 	pylint build.py
+
+bandit:
+	bandit build.py

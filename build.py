@@ -20,7 +20,7 @@
 
 import argparse
 import urllib.request
-import subprocess
+import subprocess  # nosec
 
 DISTROS = (
     "debian",
@@ -98,7 +98,7 @@ def get_version_tags(version, distro, slim):
         if version in ("latest", "stable"):
             tags.append("latest")
             url = "https://weechat.org/dev/info/stable/"
-            with urllib.request.urlopen(url) as response:
+            with urllib.request.urlopen(url) as response:  # nosec
                 version = response.read().decode("utf-8").strip()
             numbers = version.split(".")
             for i in range(len(numbers)):
@@ -138,7 +138,7 @@ def main():
     print(f'Running: {" ".join(command)}')
     if not args.dry_run:
         try:
-            subprocess.run(command, check=False)
+            subprocess.run(command, check=False)  # nosec
         except KeyboardInterrupt:
             pass
         except Exception as exc:  # pylint: disable=broad-except
