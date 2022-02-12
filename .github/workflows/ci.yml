@@ -30,13 +30,16 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Install dependencies
-        run: pip install bandit flake8 pylint
+        run: pip install bandit flake8 mypy pylint
 
       - name: Lint with flake8
         run: make flake8
 
       - name: Lint with pylint
         run: make pylint
+
+      - name: Lint with mypy
+        run: make mypy
 
       - name: Lint with bandit
         run: make bandit

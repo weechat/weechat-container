@@ -18,17 +18,19 @@
 
 """Build WeeChat container image."""
 
+from typing import List, Sequence, Tuple
+
 import argparse
 import urllib.request
 import subprocess  # nosec
 
-DISTROS = (
+DISTROS: Sequence[str] = (
     "debian",
     "alpine",
 )
 
 
-def get_parser():
+def get_parser() -> argparse.ArgumentParser:
     """Return the command line parser."""
     parser = argparse.ArgumentParser(description="Build of WeeChat container")
     parser.add_argument(
@@ -71,14 +73,15 @@ def get_parser():
     return parser
 
 
-def get_version_tags(version, distro, slim):
+def get_version_tags(
+    version: str, distro: str, slim: bool
+) -> Tuple[str, List[str]]:
     """
     Get WeeChat version and tags to apply on the container image.
 
-    :param str version: x.y, x.y.z, "latest", "stable", "devel"
-    :param str distro: "debian" or "alpine"
-    :paral bool slim: slim version
-    :rtype: list
+    :param version: x.y, x.y.z, "latest", "stable", "devel"
+    :param distro: "debian" or "alpine"
+    :paral slim: slim version
     :return: tuple (version, tags) where version if the version of WeeChat
         to build and tags is a list of tag arguments for command line,
         for example: ['-t', 'weechat:3.0-alpine',
