@@ -122,7 +122,7 @@ def get_version_tags(
     return (version, tags_args)
 
 
-def main():
+def main() -> None:
     """Main function."""
     args = get_parser().parse_args()
     slim = ["--build-arg", "SLIM=1"] if args.slim else []

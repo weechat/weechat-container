@@ -50,7 +50,7 @@ pylint:
 	pylint build.py
 
 mypy:
-	mypy build.py
+	mypy --strict build.py
 
 bandit:
 	bandit build.py
