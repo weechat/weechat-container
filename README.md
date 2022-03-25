@@ -31,6 +31,26 @@ The slim version includes all plugins except these ones:
 - scripting languages: perl, python, ruby, lua, tcl, guile, php
 - spell
 
+## Install from Docker Hub
+
+You can install directly the latest version from the Docker Hub:
+
+```
+$ docker run -ti weechat/weechat
+```
+
+Or the Alpine version:
+
+```
+$ docker run -ti weechat/weechat:latest-alpine
+```
+
+For a specific WeeChat version (Debian):
+
+```
+$ docker run -ti weechat/weechat:3.4.1
+```
+
 ## Build
 
 A Makefile is provided and supports these variables:
@@ -67,7 +87,7 @@ $ docker build -f debian/Containerfile --build-arg VERSION=3.4.1 .
 Run latest WeeChat version in Debian container:
 
 ```
-docker run -it weechat
+docker run -ti weechat
 ```
 
 Run with custom home directories on host to persist data (WeeChat ≥ 3.2, using XDG directories):
