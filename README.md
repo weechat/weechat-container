@@ -51,6 +51,8 @@ For a specific WeeChat version (Debian):
 $ docker run -ti weechat/weechat:3.4.1
 ```
 
+Images on the official Docker Hub: [https://hub.docker.com/r/weechat/weechat](https://hub.docker.com/r/weechat/weechat)
+
 ## Build
 
 A Makefile is provided and supports these variables:
