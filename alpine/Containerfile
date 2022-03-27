@@ -57,6 +57,7 @@ RUN set -eux; \
         pkgconf \
         xz \
         zlib-dev \
+        zstd-dev \
     ; \
     if [ -z "$SLIM" ] ; then \
         apk add --no-cache \
@@ -122,6 +123,7 @@ RUN set -eux; \
         ncurses-libs \
         ncurses-terminfo \
         zlib \
+        zstd \
     ; \
     if [ -z "$SLIM" ] ; then \
         apk add --no-cache \

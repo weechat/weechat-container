@@ -55,6 +55,7 @@ RUN set -eux; \
         libgcrypt20-dev \
         libgnutls28-dev \
         libncursesw5-dev \
+        libzstd-dev \
         make \
         pkg-config \
         xz-utils \
@@ -123,6 +124,7 @@ RUN set -eux; \
         libgcrypt20 \
         libgnutls30 \
         libncursesw6 \
+        libzstd1 \
         locales \
         ncurses-term \
         zlib1g \
