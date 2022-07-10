@@ -48,7 +48,7 @@ $ docker run -ti weechat/weechat:latest-alpine
 For a specific WeeChat version (Debian):
 
 ```
-$ docker run -ti weechat/weechat:3.4.1
+$ docker run -ti weechat/weechat:3.6
 ```
 
 Images on the official Docker Hub: [https://hub.docker.com/r/weechat/weechat](https://hub.docker.com/r/weechat/weechat)
@@ -72,16 +72,16 @@ Build all images with latest stable version of WeeChat:
 $ make all-images
 ```
 
-Build an Alpine-based image with Podman, slim version, WeeChat 3.4.1:
+Build an Alpine-based image with Podman, slim version, WeeChat 3.6:
 
 ```
-$ make BUILDER=podman VERSION=3.4.1 alpine-slim
+$ make BUILDER=podman VERSION=3.6 alpine-slim
 ```
 
-Build a Debian-based image with WeeChat 3.4.1, directly with docker:
+Build a Debian-based image with WeeChat 3.6, directly with docker:
 
 ```
-$ docker build -f debian/Containerfile --build-arg VERSION=3.4.1 .
+$ docker build -f debian/Containerfile --build-arg VERSION=3.6 .
 ```
 
 ## Run
