@@ -96,7 +96,7 @@ RUN set -eux; \
             .. \
             -DCMAKE_INSTALL_PREFIX=/opt/weechat \
             -DENABLE_MAN=ON \
-	    -DENABLE_HEADLESS=ON \
+	          -DENABLE_HEADLESS=ON \
         ; \
     else \
         cmake \
