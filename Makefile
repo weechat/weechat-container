@@ -39,6 +39,7 @@ alpine-slim:
 
 test-container:
 	"$(BUILDER)" run "$(IMAGE)" weechat --version
+        "$(BUILDER)" run "$(IMAGE)" weechat-headless --version
 
 lint: flake8 pylint mypy bandit
 
