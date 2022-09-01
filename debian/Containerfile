@@ -25,12 +25,12 @@ ENV LANG="C.UTF-8"
 ENV TERM="xterm-256color"
 
 # create a user
-RUN set -eux; \
-    useradd --create-home --home-dir "$HOME" user; \
-    mkdir -p "$HOME/.weechat"; \
-    mkdir -p "$HOME/.config/weechat"; \
-    mkdir -p "$HOME/.local/share/weechat"; \
-    mkdir -p "$HOME/.cache/weechat"; \
+RUN set -eux ; \
+    useradd --create-home --home-dir "$HOME" user ; \
+    mkdir -p "$HOME/.weechat" ; \
+    mkdir -p "$HOME/.config/weechat" ; \
+    mkdir -p "$HOME/.local/share/weechat" ; \
+    mkdir -p "$HOME/.cache/weechat" ; \
     chown -R user:user "$HOME"
 
 # ==== build ====
@@ -38,10 +38,10 @@ RUN set -eux; \
 FROM base as build
 LABEL stage=build
 
-RUN set -eux; \
+RUN set -eux ; \
     \
     # install download/build dependencies
-    apt-get update; \
+    apt-get update ; \
     apt-get install -y --no-install-recommends \
         asciidoctor \
         ca-certificates \
@@ -79,18 +79,20 @@ RUN set -eux; \
     fi ; \
     \
     # download WeeChat
-    cd /tmp; \
-    curl -o weechat.tar.xz "https://weechat.org/files/src/weechat-${VERSION}.tar.xz"; \
-    curl -o weechat.tar.xz.asc "https://weechat.org/files/src/weechat-${VERSION}.tar.xz.asc"; \
-    export GNUPGHOME="$(mktemp -d)"; \
-    gpg --batch --keyserver hkps://keys.openpgp.org --recv-keys A9AB5AB778FA5C3522FD0378F82F4B16DEC408F8; \
-    gpg --batch --verify /tmp/weechat.tar.xz.asc /tmp/weechat.tar.xz; \
-    gpgconf --kill all; \
+    cd /tmp ; \
+    curl -o weechat.tar.xz "https://weechat.org/files/src/weechat-${VERSION}.tar.xz" ; \
+    if [ "$VERSION" != "devel" ] ; then \
+        curl -o weechat.tar.xz.asc "https://weechat.org/files/src/weechat-${VERSION}.tar.xz.asc" ; \
+        export GNUPGHOME="$(mktemp -d)" ; \
+        gpg --batch --keyserver hkps://keys.openpgp.org --recv-keys A9AB5AB778FA5C3522FD0378F82F4B16DEC408F8 ; \
+        gpg --batch --verify /tmp/weechat.tar.xz.asc /tmp/weechat.tar.xz ; \
+        gpgconf --kill all ; \
+    fi ; \
     \
     # build WeeChat
-    mkdir -p /tmp/weechat/build; \
-    tar -xf /tmp/weechat.tar.xz -C /tmp/weechat --strip-components 1; \
-    cd /tmp/weechat/build; \
+    mkdir -p /tmp/weechat/build ; \
+    tar -xf /tmp/weechat.tar.xz -C /tmp/weechat --strip-components 1 ; \
+    cd /tmp/weechat/build ; \
     if [ -z "$SLIM" ] ; then \
         cmake \
             .. \
@@ -109,17 +111,17 @@ RUN set -eux; \
             -DENABLE_HEADLESS=ON \
         ; \
     fi ; \
-    make -j $(nproc); \
+    make -j $(nproc) ; \
     make install
 
 # ==== final image ====
 
 FROM base
 
-RUN set -eux; \
+RUN set -eux ; \
     \
     # install runtime dependencies
-    apt-get update; \
+    apt-get update ; \
     apt-get install -y --no-install-recommends \
         ca-certificates \
         libcurl3-gnutls \
@@ -144,7 +146,7 @@ RUN set -eux; \
         ; \
     fi ; \
     # cleaning
-    apt-get clean; \
+    apt-get clean ; \
     rm -rf /var/lib/apt/lists/*
 
 COPY --from=build /opt/weechat /opt/weechat
