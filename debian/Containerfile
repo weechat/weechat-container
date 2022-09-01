@@ -156,5 +156,4 @@ WORKDIR $HOME
 
 USER user
 
-# weird, a refresh has to be forced to prevent a blank screen on startup
-CMD ["weechat", "-r", "/window refresh"]
+CMD ["weechat"]
