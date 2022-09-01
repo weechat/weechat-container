@@ -96,6 +96,7 @@ RUN set -eux; \
             .. \
             -DCMAKE_INSTALL_PREFIX=/opt/weechat \
             -DENABLE_MAN=ON \
+            -DENABLE_HEADLESS=ON \
         ; \
     else \
         cmake \
@@ -105,6 +106,7 @@ RUN set -eux; \
             -DENABLE_SCRIPT=OFF \
             -DENABLE_SCRIPTS=OFF \
             -DENABLE_SPELL=OFF \
+            -DENABLE_HEADLESS=ON \
         ; \
     fi ; \
     make -j $(nproc); \
@@ -148,6 +150,7 @@ RUN set -eux; \
 COPY --from=build /opt/weechat /opt/weechat
 
 RUN ln -sf /opt/weechat/bin/weechat /usr/bin/weechat
+RUN ln -sf /opt/weechat/bin/weechat-headless /usr/bin/weechat-headless
 
 WORKDIR $HOME
 
