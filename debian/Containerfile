@@ -9,7 +9,7 @@
 FROM debian:bullseye-slim as base
 LABEL stage=base
 
-MAINTAINER Sébastien Helleu <flashcode@flashtux.org>
+LABEL maintainer="Sébastien Helleu <flashcode@flashtux.org>"
 
 # WeeChat version
 ARG VERSION="latest"
