@@ -126,6 +126,7 @@ RUN set -eux ; \
         libgcrypt \
         ncurses-libs \
         ncurses-terminfo \
+        tzdata \
         zlib \
         zstd \
         zstd-libs \
