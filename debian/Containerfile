@@ -131,6 +131,7 @@ RUN set -eux ; \
         libzstd1 \
         locales \
         ncurses-term \
+        tzdata \
         zlib1g \
     ; \
     if [ -z "$SLIM" ] ; then \
