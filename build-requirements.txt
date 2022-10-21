@@ -1,4 +1,4 @@
 bandit
 flake8
 mypy
-lint
+pylint
