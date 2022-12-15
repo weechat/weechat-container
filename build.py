@@ -18,16 +18,44 @@
 
 """Build WeeChat container image."""
 
-from typing import List, Sequence, Tuple
+from typing import List, Sequence, Tuple, Dict
 
 import argparse
 import urllib.request
 import subprocess  # nosec
 
+BUILDERS: Sequence[str] = (
+    "docker",
+    "podman",
+)
+
 DISTROS: Sequence[str] = (
     "debian",
     "alpine",
 )
+
+SUPPORTED_PLATFORMS: Dict[str, Dict[str, List[str]]] = {
+  "linux": {
+    "386": [],
+    "amd64": [],
+    "arm": ["v6", "v7"],
+    "arm64": [],
+    "ppc64le": [],
+    "s390x": [],
+  },
+}
+
+
+def generate_valid_platforms() -> list[str]:
+    """Return the list of supported platforms."""
+    valid_platforms = []
+    for os_name, archs in SUPPORTED_PLATFORMS.items():
+        for arch, variants in archs.items():
+            if not variants:
+                valid_platforms.append(f"{os_name}/{arch}")
+            for variant in variants:
+                valid_platforms.append(f"{os_name}/{arch}/{variant}")
+    return valid_platforms
 
 
 def get_parser() -> argparse.ArgumentParser:
@@ -36,7 +64,8 @@ def get_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "-b",
         "--builder",
-        default="docker",
+        choices=BUILDERS,
+        default=BUILDERS[0],
         help=(
             "program used to build the container image, "
             "like docker (default) or podman"
@@ -47,7 +76,29 @@ def get_parser() -> argparse.ArgumentParser:
         "--distro",
         choices=DISTROS,
         default=DISTROS[0],
-        help="base Linux distribution for the container",
+        help="base Linux distribution for the container, default %(default)s",
+    )
+    parser.add_argument(
+        "-p",
+        "--platforms",
+        default="linux/amd64",
+        choices=generate_valid_platforms(),
+        nargs="+",
+        help="build platforms",
+    )
+    parser.add_argument(
+        "--push",
+        action="store_true",
+        default=False,
+        help=(
+            "push the images to the registry, default: %(default)s"
+        ),
+    )
+    parser.add_argument(
+        "-r",
+        "--registry-project",
+        default="docker.io/weechat",
+        help="registry project, default: %(default)s",
     )
     parser.add_argument(
         "-n",
@@ -81,7 +132,7 @@ def get_version_tags(
 
     :param version: x.y, x.y.z, "latest", "stable", "devel"
     :param distro: "debian" or "alpine"
-    :paral slim: slim version
+    :param slim: slim version
     :return: tuple (version, tags) where version if the version of WeeChat
         to build and tags is a list of tag arguments for command line,
         for example: ['-t', 'weechat:3.0-alpine',
@@ -111,25 +162,61 @@ def get_version_tags(
     tags_args = []
     for tag in reversed(tags):
         for suffix in suffixes:
-            tags_args.extend(
-                [
-                    "-t",
+            tags_args.append(
                     f"weechat:{tag}{suffix}",
-                    "-t",
-                    f"weechat/weechat:{tag}{suffix}",
-                ]
             )
     return (version, tags_args)
 
 
+def run_command(command: List[str], dry_run: bool) -> None:
+    """
+    Prints the command to run and runs it if 'dry_run=False'
+
+    :param command: ["docker", "images"]
+    :param dry_run: True
+    :return: None
+    """
+    print(f'Running: {" ".join(command)}')
+    if not dry_run:
+        try:
+            subprocess.run(command, check=False)  # nosec
+        except KeyboardInterrupt:
+            pass
+        except Exception as exc:  # pylint: disable=broad-except
+            print(exc)
+
+
 def main() -> None:
     """Main function."""
+    build_args = ["buildx", "build"]
     args = get_parser().parse_args()
     slim = ["--build-arg", "SLIM=1"] if args.slim else []
     version, tags = get_version_tags(args.version, args.distro, args.slim)
+
+    if args.builder == "docker":
+        docker_tags = []
+        for tag in tags:
+            docker_tags.extend(["-t", f"{args.registry_project}/{tag}"])
+        tags = docker_tags
+        if args.push:
+            build_args.append("--push")
+
+    podman_slim = ""
+    if args.slim:
+        podman_slim = "-slim"
+    podman_manifest_image = f"localhost/weechat:{version}" \
+        + f"-{args.distro}{podman_slim}-manifest"
+    podman_tags = [tag for tag in tags if tag.startswith("weechat:")]
+
+    if args.builder == "podman":
+        build_args = ["build", "--jobs", "0"]
+        tags = ["--manifest", podman_manifest_image]
+
     command = [
         f"{args.builder}",
-        "build",
+        *build_args,
+        "--platform",
+        ",".join(args.platforms),
         "-f",
         f"{args.distro}/Containerfile",
         "--build-arg",
@@ -138,14 +225,27 @@ def main() -> None:
         *tags,
         ".",
     ]
-    print(f'Running: {" ".join(command)}')
-    if not args.dry_run:
-        try:
-            subprocess.run(command, check=False)  # nosec
-        except KeyboardInterrupt:
-            pass
-        except Exception as exc:  # pylint: disable=broad-except
-            print(exc)
+    run_command(command, args.dry_run)
+
+    if args.builder == "podman":
+        command = [
+              f"{args.builder}",
+              "tag",
+              podman_manifest_image,
+              *[f"localhost/{tag}" for tag in podman_tags]
+        ]
+        run_command(command, args.dry_run)
+
+        if args.push:
+            for tag in podman_tags:
+                command = [
+                      f"{args.builder}",
+                      "manifest",
+                      "push",
+                      f"localhost/{tag}",
+                      f"{args.registry_project}/{tag}"
+                ]
+                run_command(command, args.dry_run)
 
 
 if __name__ == "__main__":

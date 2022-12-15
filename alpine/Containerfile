@@ -18,20 +18,11 @@ ENV VERSION="${VERSION}"
 ARG SLIM=""
 ENV SLIM="${SLIM}"
 
-ARG HOME="/home/user"
+ARG HOME="/weechat"
 ENV HOME="${HOME}"
 
 ENV LANG="C.UTF-8"
 ENV TERM="xterm-256color"
-
-# create a user
-RUN set -eux ; \
-    adduser -u 1001 -D -h "$HOME" user ; \
-    mkdir -p "$HOME/.weechat" ; \
-    mkdir -p "$HOME/.config/weechat" ; \
-    mkdir -p "$HOME/.local/share/weechat" ; \
-    mkdir -p "$HOME/.cache/weechat" ; \
-    chown -R user:user "$HOME"
 
 # ==== build ====
 
@@ -126,6 +117,8 @@ RUN set -eux ; \
         libgcrypt \
         ncurses-libs \
         ncurses-terminfo \
+        shadow \
+        setpriv \
         tzdata \
         zlib \
         zstd \
@@ -151,8 +144,17 @@ COPY --from=build /opt/weechat /opt/weechat
 RUN ln -sf /opt/weechat/bin/weechat /usr/bin/weechat
 RUN ln -sf /opt/weechat/bin/weechat-headless /usr/bin/weechat-headless
 
+# create a user
+RUN set -eux ; \
+  adduser -u 1000 -D -h "$HOME" weechat; \
+  mkdir -p "$HOME/.weechat" ; \
+  mkdir -p "$HOME/.config/weechat" ; \
+  mkdir -p "$HOME/.local/share/weechat" ; \
+  mkdir -p "$HOME/.cache/weechat" ; \
+  chown -R weechat:weechat "$HOME"
+
+ADD ../run.sh /
+
 WORKDIR $HOME
 
-USER user
-
-CMD ["weechat"]
+ENTRYPOINT [ "/run.sh" ]

@@ -16,8 +16,20 @@
 #
 
 BUILDER ?= docker
+PLATFORMS ?= linux/amd64
 VERSION ?= latest
 IMAGE ?= weechat
+REGISTRY ?= docker.io
+REGISTRY_PROJECT ?= weechat
+REGISTRY_PROJECT_URL = $(REGISTRY)/$(REGISTRY_PROJECT)
+REGISTRY_IMAGE = $(REGISTRY_PROJECT_URL)/$(IMAGE)
+
+ALPINE_BASE_IMAGE = alpine:3.15
+DEBIAN_BASE_IMAGE = debian:bullseye-slim
+
+ifeq ($(strip $(PUSH)),true)
+PUSH_ARG = "--push"
+endif
 
 .PHONY: all debian debian-slim alpine alpine-slim
 
@@ -25,22 +37,52 @@ all: debian
 
 all-images: debian debian-slim alpine alpine-slim
 
-debian:
-	./build.py -b "$(BUILDER)" -d "debian" "$(VERSION)"
+debian: weechat-multiarch
+	./build.py -b "$(BUILDER)" -p $(PLATFORMS) -r "$(REGISTRY_PROJECT_URL)" $(PUSH_ARG)  -d "debian" "$(VERSION)"
 
-debian-slim:
-	./build.py -b "$(BUILDER)" -d "debian" --slim "$(VERSION)"
+debian-slim: weechat-multiarch
+	./build.py -b "$(BUILDER)" -p $(PLATFORMS) -r "$(REGISTRY_PROJECT_URL)" $(PUSH_ARG) -d "debian" --slim "$(VERSION)"
 
-alpine:
-	./build.py -b "$(BUILDER)" -d "alpine" "$(VERSION)"
+alpine: weechat-multiarch
+	./build.py -b "$(BUILDER)" -p $(PLATFORMS) -r "$(REGISTRY_PROJECT_URL)" $(PUSH_ARG) -d "alpine" "$(VERSION)"
 
-alpine-slim:
-	./build.py -b "$(BUILDER)" -d "alpine" --slim "$(VERSION)"
+alpine-slim: weechat-multiarch
+	./build.py -b "$(BUILDER)" -p $(PLATFORMS) -r "$(REGISTRY_PROJECT_URL)" $(PUSH_ARG) -d "alpine" --slim "$(VERSION)"
 
-test-container:
-	"$(BUILDER)" run "$(IMAGE)" weechat --version
-	"$(BUILDER)" run "$(IMAGE)" weechat-headless --version
+weechat-multiarch:
+	if [ "$(BUILDER)" == "docker" ]; then \
+		docker buildx ls | grep weechat-multiarch || docker buildx create --name weechat-multiarch ; \
+		docker buildx use weechat-multiarch; \
+	fi
 
+test-images:
+	for PLATFORM in $(PLATFORMS); do \
+		for TAG in $(VERSION)-{debian,alpine}{,-slim}; do \
+			REGISTRY_IMAGE_TAG=$(REGISTRY_IMAGE):$$TAG; \
+			echo "Testing $$REGISTRY_IMAGE_TAG for $$PLATFORM platform" ; \
+			$(BUILDER) pull --platform $$PLATFORM $$REGISTRY_IMAGE_TAG &>/dev/null; \
+			echo -n "weechat --version: "; \
+			$(BUILDER) run --rm --platform $$PLATFORM $$REGISTRY_IMAGE_TAG --version; \
+			echo -n "weechat-headless --version: "; \
+			$(BUILDER) run --rm --platform $$PLATFORM --entrypoint /usr/bin/weechat-headless $$REGISTRY_IMAGE_TAG --version ; \
+			$(BUILDER) rmi $$REGISTRY_IMAGE_TAG &>/dev/null; \
+	  done; \
+	done
+
+clean-images:
+	if [ "$(BUILDER)" == "podman" ]; then \
+		buildah rm --all; \
+		$(BUILDER) images --format="{{.Repository}}:{{.Tag}}" localhost/$(IMAGE) | xargs --no-run-if-empty $(BUILDER) rmi -f; \
+		$(BUILDER) images --format="{{.Repository}}:{{.Tag}}" $(REGISTRY_PROJECT)/$(IMAGE) | xargs --no-run-if-empty $(BUILDER) rmi -f; \
+		$(BUILDER) images --format="{{.Repository}}:{{.Tag}}" $(ALPINE_BASE_IMAGE) | xargs --no-run-if-empty $(BUILDER) rmi -f; \
+		$(BUILDER) images --format="{{.Repository}}:{{.Tag}}" $(DEBIAN_BASE_IMAGE) | xargs --no-run-if-empty $(BUILDER) rmi -f; \
+		$(BUILDER) image prune -f; \
+	fi
+	if [ "$(BUILDER)" == "docker" ]; then \
+		$(BUILDER) buildx rm weechat-multiarch; \
+		$(BUILDER) rmi moby/buildkit:buildx-stable-1
+	fi
+	
 lint: flake8 pylint mypy bandit
 
 flake8:
