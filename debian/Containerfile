@@ -58,6 +58,7 @@ RUN set -eux ; \
         libzstd-dev \
         make \
         pkg-config \
+        ruby-pygments.rb \
         xz-utils \
         zlib1g-dev \
     ; \
