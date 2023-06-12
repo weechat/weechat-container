@@ -18,9 +18,9 @@ Optional dependencies:
 
 Images are based on Debian or Alpine (smaller size, with same features):
 
-- Debian Bullseye:
-  - `debian` (~ 300 MB)
-  - `debian-slim`: slim version (~ 110 MB)
+- Debian Bookworm:
+  - `debian` (~ 350 MB)
+  - `debian-slim`: slim version (~ 120 MB)
 - Alpine 3.15:
   - `alpine` (~ 150 MB)
   - `alpine-slim`: slim version (~ 30 MB)

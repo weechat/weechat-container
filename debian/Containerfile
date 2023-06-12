@@ -6,7 +6,7 @@
 
 # ==== base for all stages ====
 
-FROM debian:bullseye-slim as base
+FROM debian:bookworm-slim as base
 LABEL stage=base
 
 LABEL maintainer="Sébastien Helleu <flashcode@flashtux.org>"
@@ -64,6 +64,7 @@ RUN set -eux ; \
     ; \
     if [ -z "$SLIM" ] ; then \
         apt-get install -y --no-install-recommends \
+            gem2deb \
             guile-3.0-dev \
             libargon2-dev \
             libaspell-dev \
@@ -74,7 +75,6 @@ RUN set -eux ; \
             libxml2-dev \
             php-dev \
             python3-dev \
-            ruby2.7-dev \
             tcl-dev \
         ; \
     fi ; \
@@ -140,10 +140,10 @@ RUN set -eux ; \
             guile-3.0-libs \
             libaspell15 \
             liblua5.3-0 \
-            libperl5.32 \
+            libperl5.36 \
             libphp-embed \
-            libpython3.9 \
-            libruby2.7 \
+            libpython3.11 \
+            libruby3.1 \
             libtcl8.6 \
         ; \
     fi ; \
