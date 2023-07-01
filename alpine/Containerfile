@@ -6,7 +6,7 @@
 
 # ==== base for all stages ====
 
-FROM alpine:3.15 as base
+FROM alpine:3.18 as base
 LABEL stage=base
 
 LABEL maintainer="Sébastien Helleu <flashcode@flashtux.org>"
@@ -42,6 +42,7 @@ RUN set -eux ; \
     \
     # install download/build dependencies
     apk add --no-cache \
+        acl-dev \
         asciidoctor \
         cmake \
         curl \
@@ -65,10 +66,10 @@ RUN set -eux ; \
             aspell-dev \
             guile-dev \
             libxml2-dev \
-            lua5.3-dev \
+            lua5.4-dev \
             perl-dev \
-            php7-dev \
-            php7-embed \
+            php82-dev \
+            php82-embed \
             python3-dev \
             ruby-dev \
             tcl-dev \
@@ -136,10 +137,10 @@ RUN set -eux ; \
             aspell-libs \
             guile \
             guile-libs \
-            lua5.3-libs \
+            lua5.4-libs \
             perl \
-            php7 \
-            php7-embed \
+            php82 \
+            php82-embed \
             python3 \
             ruby-libs \
             tcl \
