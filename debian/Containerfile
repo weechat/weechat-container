@@ -54,7 +54,7 @@ RUN set -eux ; \
         libcurl3-gnutls-dev \
         libgcrypt20-dev \
         libgnutls28-dev \
-        libncursesw5-dev \
+        libncurses-dev \
         libzstd-dev \
         make \
         pkg-config \
