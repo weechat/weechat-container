@@ -103,11 +103,11 @@ def get_version_tags(
             url = "https://weechat.org/dev/info/stable/"
             with urllib.request.urlopen(url) as response:  # nosec
                 version = response.read().decode("utf-8").strip()
-            numbers = version.split(".")
-            for i in range(len(numbers)):
-                tags.append(".".join(numbers[: i + 1]))
         else:
             tags.append(version)
+        numbers = version.split(".")
+        for i in range(len(numbers)):
+            tags.append(".".join(numbers[: i + 1]))
     tags_args = []
     for tag in reversed(tags):
         for suffix in suffixes:
