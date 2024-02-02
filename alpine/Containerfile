@@ -6,7 +6,7 @@
 
 # ==== base for all stages ====
 
-FROM alpine:3.18 as base
+FROM alpine:3.19 as base
 LABEL stage=base
 
 LABEL maintainer="Sébastien Helleu <flashcode@flashtux.org>"
