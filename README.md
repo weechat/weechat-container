@@ -31,6 +31,20 @@ The slim version includes all plugins except these ones:
 - scripting languages: perl, python, ruby, lua, tcl, guile, php
 - spell
 
+## Supported platforms
+
+It's possible to build for different linux platforms other than amd64,
+the only prerequisite is to have `qemu-user-static` package installed
+
+- `linux/386`
+- `linux/amd64`
+- `linux/arm/v6`
+- `linux/arm/v7`
+- `linux/arm64`
+- `linux/ppc64le`
+- `linux/s390x`
+
+
 ## Install from Docker Hub
 
 You can install directly the latest version from the Docker Hub:
@@ -70,6 +84,13 @@ Build all images with latest stable version of WeeChat:
 
 ```
 $ make all-images
+```
+
+Build all images with latest stable version of WeeChat for AMD64 and ARM64 platforms
+and push them to the `docker.io/weechat` registry project:
+
+```
+$ make PLATFORMS="linux/amd64 linux/arm64" REGISTRY="docker.io" REGISTRY_PROJECT="weechat" PUSH=true all-images
 ```
 
 Build an Alpine-based image with Podman, slim version, WeeChat 3.6:
