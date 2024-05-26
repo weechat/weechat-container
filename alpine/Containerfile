@@ -44,6 +44,7 @@ RUN set -eux ; \
     apk add --no-cache \
         acl-dev \
         asciidoctor \
+        cjson-dev \
         cmake \
         curl \
         curl-dev \
@@ -121,6 +122,7 @@ RUN set -eux ; \
     # install runtime dependencies
     apk add --no-cache \
         ca-certificates \
+        cjson \
         gettext \
         gnutls \
         libcurl \

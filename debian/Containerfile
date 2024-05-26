@@ -51,6 +51,7 @@ RUN set -eux ; \
         gcc \
         gettext \
         gnupg \
+        libcjson-dev \
         libcurl3-gnutls-dev \
         libgcrypt20-dev \
         libgnutls28-dev \
@@ -125,6 +126,7 @@ RUN set -eux ; \
     apt-get update ; \
     apt-get install -y --no-install-recommends \
         ca-certificates \
+        libcjson1 \
         libcurl3-gnutls \
         libgcrypt20 \
         libgnutls30 \
