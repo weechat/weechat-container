@@ -55,6 +55,7 @@ Run with custom home directories on host to persist data (WeeChat ≥ 3.2, using
 
 ```bash
 mkdir -p ~/.weechat-container/config ~/.weechat-container/data ~/.weechat-container/cache
+chmod 777 ~/.weechat-container/config ~/.weechat-container/data ~/.weechat-container/cache
 docker run -it -v $HOME/.weechat-container/config:/home/user/.config/weechat -v $HOME/.weechat-container/data:/home/user/.local/share/weechat -v $HOME/.weechat-container/cache:/home/user/.cache/weechat weechat/weechat
 ```
 
@@ -62,6 +63,7 @@ Run with a custom single home directory on host to persist data (any WeeChat ver
 
 ```bash
 mkdir -p ~/.weechat-container
+chmod 777 ~/.weechat-container
 docker run -it -v $HOME/.weechat-container:/home/user/.weechat weechat/weechat weechat -d /home/user/.weechat
 ```
 
