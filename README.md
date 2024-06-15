@@ -31,27 +31,39 @@ The slim version includes all plugins except these ones:
 - scripting languages: perl, python, ruby, lua, tcl, guile, php
 - spell
 
-## Install from Docker Hub
+## Install and run with Docker Hub
 
-You can install directly the latest version from the Docker Hub:
+You can install and run directly the latest version from the [Docker Hub](https://hub.docker.com/r/weechat/weechat):
 
 ```
-$ docker run -ti weechat/weechat
+$ docker run -it weechat/weechat
 ```
 
 Or the Alpine version:
 
 ```
-$ docker run -ti weechat/weechat:latest-alpine
+$ docker run -it weechat/weechat:latest-alpine
 ```
 
 For a specific WeeChat version (Debian):
 
 ```
-$ docker run -ti weechat/weechat:3.6
+$ docker run -it weechat/weechat:4.3.2
 ```
 
-Images on the official Docker Hub: [https://hub.docker.com/r/weechat/weechat](https://hub.docker.com/r/weechat/weechat)
+Run with custom home directories on host to persist data (WeeChat ≥ 3.2, using XDG directories):
+
+```
+mkdir -p ~/.weechat-container/config ~/.weechat-container/data ~/.weechat-container/cache
+docker run -it -v $HOME/.weechat-container/config:/home/user/.config/weechat -v $HOME/.weechat-container/data:/home/user/.local/share/weechat -v $HOME/.weechat-container/cache:/home/user/.cache/weechat weechat/weechat
+```
+
+Run with a custom single home directory on host to persist data (any WeeChat version):
+
+```
+mkdir -p ~/.weechat-container
+docker run -it -v $HOME/.weechat-container:/home/user/.weechat weechat/weechat weechat -d /home/user/.weechat
+```
 
 ## Build
 
@@ -82,28 +94,6 @@ Build a Debian-based image with WeeChat 3.6, directly with docker:
 
 ```
 $ docker build -f debian/Containerfile --build-arg VERSION=3.6 .
-```
-
-## Run
-
-Run latest WeeChat version in Debian container:
-
-```
-docker run -ti weechat
-```
-
-Run with custom home directories on host to persist data (WeeChat ≥ 3.2, using XDG directories):
-
-```
-mkdir -p ~/.weechat-container/config ~/.weechat-container/data ~/.weechat-container/cache
-docker run -ti -v $HOME/.weechat-container/config:/home/user/.config/weechat -v $HOME/.weechat-container/data:/home/user/.local/share/weechat -v $HOME/.weechat-container/cache:/home/user/.cache/weechat weechat
-```
-
-Run with a custom single home directory on host to persist data (any WeeChat version):
-
-```
-mkdir -p ~/.weechat-container
-docker run -ti -v $HOME/.weechat-container:/home/user/.weechat weechat -d /home/user/.weechat
 ```
 
 ## Copyright
