@@ -18,10 +18,10 @@ Optional dependencies:
 
 Images are based on Debian or Alpine (smaller size, with same features):
 
-- Debian Bookworm:
+- Debian:
   - `debian` (~ 350 MB)
   - `debian-slim`: slim version (~ 120 MB)
-- Alpine 3.15:
+- Alpine:
   - `alpine` (~ 150 MB)
   - `alpine-slim`: slim version (~ 30 MB)
 
