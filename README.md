@@ -86,16 +86,16 @@ Build all images with latest stable version of WeeChat:
 make all-images
 ```
 
-Build an Alpine-based image with Podman, slim version, WeeChat 3.6:
+Build an Alpine-based image with Podman, slim version, WeeChat 4.3.2:
 
 ```bash
-make BUILDER=podman VERSION=3.6 alpine-slim
+make BUILDER=podman VERSION=4.3.2 alpine-slim
 ```
 
-Build a Debian-based image with WeeChat 3.6, directly with docker:
+Build a Debian-based image with WeeChat 4.3.2, directly with docker:
 
 ```bash
-docker build -f debian/Containerfile --build-arg VERSION=3.6 .
+docker build -f debian/Containerfile --build-arg VERSION=4.3.2 .
 ```
 
 ## Copyright
