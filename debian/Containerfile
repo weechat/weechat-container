@@ -6,7 +6,7 @@
 
 # ==== base for all stages ====
 
-FROM debian:bookworm-slim as base
+FROM debian:bookworm-slim AS base
 LABEL stage=base
 
 LABEL maintainer="Sébastien Helleu <flashcode@flashtux.org>"
@@ -35,7 +35,7 @@ RUN set -eux ; \
 
 # ==== build ====
 
-FROM base as build
+FROM base AS build
 LABEL stage=build
 
 RUN set -eux ; \
