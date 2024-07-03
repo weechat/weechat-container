@@ -137,6 +137,7 @@ RUN set -eux ; \
     if [ -z "$SLIM" ] ; then \
         apk add --no-cache \
             aspell-libs \
+            aspell-en \
             guile \
             guile-libs \
             lua5.4-libs \
