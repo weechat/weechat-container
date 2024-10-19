@@ -10,15 +10,16 @@ jobs:
 
     strategy:
       matrix:
+        os:
+          - ubuntu-24.04
         python-version:
-          - "3.6"
-          - "3.7"
-          - "3.8"
           - "3.9"
           - "3.10"
+          - "3.11"
+          - "3.12"
 
-    name: Python ${{ matrix.python-version }}
-    runs-on: ubuntu-20.04
+    name: Python ${{ matrix.python-version }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
 
     steps:
 
@@ -52,6 +53,8 @@ jobs:
 
     strategy:
       matrix:
+        os:
+          - ubuntu-24.04
         builder:
           - docker
           - podman
@@ -61,14 +64,14 @@ jobs:
           - alpine
           - alpine-slim
 
-    name: ${{ matrix.builder }} build ${{ matrix.image }}
-    runs-on: ubuntu-20.04
+    name: "${{ matrix.builder }}: ${{ matrix.image }} on ${{ matrix.os }}"
+    runs-on: ${{ matrix.os }}
 
     steps:
 
       - uses: actions/checkout@v4
 
-      - name: ${{ matrix.builder }} build ${{ matrix.image }}
+      - name: "${{ matrix.builder }}: ${{ matrix.image }}"
         run: |
           make BUILDER=${{ matrix.builder }} ${{ matrix.image }}
           make BUILDER=${{ matrix.builder }} IMAGE=weechat:latest-${{ matrix.image }} test-container
