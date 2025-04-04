@@ -1,6 +1,7 @@
 # Containerized WeeChat
 
 [![Build Status](https://github.com/weechat/weechat-container/workflows/CI/badge.svg)](https://github.com/weechat/weechat-container/actions?query=workflow%3A%22CI%22)
+[![REUSE status](https://api.reuse.software/badge/github.com/weechat/weechat-container)](https://api.reuse.software/info/github.com/weechat/weechat-container)
 
 Build of WeeChat images using [Docker](https://www.docker.com/) (default) or [Podman](https://podman.io/).
 
