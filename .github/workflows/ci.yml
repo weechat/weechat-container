@@ -33,7 +33,12 @@ jobs:
           cache-dependency-path: build-requirements.txt
 
       - name: Install dependencies
-        run: pip install -r build-requirements.txt
+        run: |
+          pip install -r build-requirements.txt
+          pip install reuse
+
+      - name: Check REUSE compliancy
+        run: reuse lint
 
       - name: Lint with flake8
         run: make flake8
