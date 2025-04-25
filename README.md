@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2021-2025 Sébastien Helleu <flashcode@flashtux.org>
+
+SPDX-License-Identifier: GPL-3.0-or-later
+-->
+
 # Containerized WeeChat
 
 [![Build Status](https://github.com/weechat/weechat-container/workflows/CI/badge.svg)](https://github.com/weechat/weechat-container/actions?query=workflow%3A%22CI%22)
@@ -101,6 +107,7 @@ docker build -f debian/Containerfile --build-arg VERSION=4.3.2 .
 
 ## Copyright
 
+<!-- REUSE-IgnoreStart -->
 Copyright © 2021-2025 [Sébastien Helleu](https://github.com/flashcode)
 
 This program is free software; you can redistribute it and/or modify
@@ -115,3 +122,4 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
+<!-- REUSE-IgnoreEnd -->
