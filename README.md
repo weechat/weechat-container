@@ -105,6 +105,59 @@ Build a Debian-based image with WeeChat 4.3.2, directly with docker:
 docker build -f debian/Containerfile --build-arg VERSION=4.3.2 .
 ```
 
+## Update image
+
+To update your existing WeeChat container to a newer image version:
+
+**Pull the latest image:**
+
+```bash
+docker pull weechat/weechat:latest
+```
+
+Or for Alpine:
+
+```bash
+docker pull weechat/weechat:latest-alpine
+```
+
+**Recreate the container** (preserving your persistent data):
+
+If you used persistent volumes (recommended):
+
+```bash
+docker stop weechat
+docker rm weechat
+docker run -it -v $HOME/.weechat-container/config:/home/user/.config/weechat \
+  -v $HOME/.weechat-container/data:/home/user/.local/share/weechat \
+  -v $HOME/.weechat-container/cache:/home/user/.cache/weechat \
+  weechat/weechat:latest
+```
+
+If you used a single home directory:
+
+```bash
+docker stop weechat
+docker rm weechat
+docker run -it -v $HOME/.weechat-container:/home/user/.weechat \
+  weechat/weechat:latest weechat -d /home/user/.weechat
+```
+
+**Remove the old image** (after verifying the new container works):
+
+```bash
+docker image prune -f
+```
+
+Or to remove only the specific old WeeChat image:
+
+```bash
+docker images | grep weechat/weechat
+docker rmi <old-image-id>
+```
+
+**Note:** Your WeeChat configuration, logs, and scripts are preserved as long as you use volume mounts. Always ensure you have backups before updating. The old image will continue taking disk space until pruned.
+
 ## Copyright
 
 <!-- REUSE-IgnoreStart -->
